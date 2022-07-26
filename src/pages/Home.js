@@ -1,15 +1,34 @@
 import { React } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteTodo, asyncLoad } from "./todosSlice";
+import { deleteTodo, asyncLoad } from "../features/todos/todosSlice";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "../App.css";
 
 function Home() {
   const todos = useSelector((state) => state.todos.list);
-  //const loading = useSelector((state) => state.todos.loading);
+  const loading = useSelector((state) => state.todos.loading);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const toasting = (dest) => {
+    dispatch(asyncLoad(true));
+    toast.info("Loading...", {
+      position: "top-center",
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: false,
+      progress: undefined,
+    });
+    setTimeout(() => {
+      dispatch(asyncLoad(false));
+      navigate(dest);
+    }, 2000);
+  };
 
   const renderTodos = () => {
     const queryParams = new URLSearchParams(location.search);
@@ -31,20 +50,19 @@ function Home() {
           <div className="column">
             <button
               onClick={() => dispatch(deleteTodo(item.id))}
+              disabled={loading}
               className="btn btn-danger"
             >
               D
             </button>
             <button
-              onClick={() =>
-                dispatch(
-                  asyncLoad({ nav: navigate, destination: `/todo/${item.id}` })
-                )
-              }
+              onClick={() => toasting(`/todo/${item.id}`)}
+              disabled={loading}
               className="btn btn-primary"
             >
               E
             </button>
+            <ToastContainer theme="colored" />
           </div>
         </div>
       </dd>
@@ -53,12 +71,10 @@ function Home() {
 
   return (
     <div>
+      <ToastContainer theme="colored" />
       <button
-        onClick={() =>
-          dispatch(
-            asyncLoad({ nav: navigate, destination: "/todo" })
-          )
-        }
+        onClick={() => toasting("/todo")}
+        disabled={loading}
         className="btn btn-warning floatRight"
       >
         New
