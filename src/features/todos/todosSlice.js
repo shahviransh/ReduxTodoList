@@ -24,13 +24,7 @@ export const todosSlice = createSlice({
       });
     },
     asyncLoad: (state, actions) => {
-      const dict = actions.payload;
-      state.loading = true;
-      dict.nav("/loading")
-      setTimeout(() => {
-        dict.nav(dict.destination);
-      }, 1000);
-      state.loading = false;
+      state.loading = actions.payload;
     },
   },
 });
