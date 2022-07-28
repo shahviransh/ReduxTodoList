@@ -13,7 +13,7 @@ function Home() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const toasting = (dest) => {
+  const toasting = (dest, nav = true) => {
     dispatch(asyncLoad(true));
     toast.info("Loading...", {
       position: "top-center",
@@ -26,7 +26,7 @@ function Home() {
     });
     setTimeout(() => {
       dispatch(asyncLoad(false));
-      navigate(dest);
+      if (nav) navigate(dest);
     }, 2000);
   };
 
@@ -49,7 +49,10 @@ function Home() {
           <div className="column">{item.finished ? "Yes" : "No"}</div>
           <div className="column">
             <button
-              onClick={() => dispatch(deleteTodo(item.id))}
+              onClick={() => {
+                toasting("", false);
+                setTimeout(() => dispatch(deleteTodo(item.id)), 2000);
+              }}
               disabled={loading}
               className="btn btn-danger"
             >

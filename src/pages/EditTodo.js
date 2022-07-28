@@ -111,7 +111,7 @@ function EditTodo() {
           disabled={loading}
           className="btn btn-outline-primary"
         >
-          {params.id ? "Edit" : "Add"}
+          {loading ? "Loading..." : params.id ? "Edit" : "Add"}
         </button>
       </div>
     </div>
